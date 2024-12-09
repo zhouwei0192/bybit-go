@@ -11,18 +11,23 @@ import (
 
 // SubscribeKline :
 func (s *V5WebsocketPublicService) SubscribeKline(
-	key V5WebsocketPublicKlineParamKey,
+	keys []V5WebsocketPublicKlineParamKey,
 	f func(V5WebsocketPublicKlineResponse) error,
 ) (func() error, error) {
-	if err := s.addParamKlineFunc(key, f); err != nil {
-		return nil, err
+	args := make([]interface{}, 0)
+	for _, key := range keys {
+		if err := s.addParamKlineFunc(key, f); err != nil {
+			return nil, err
+		}
+		args = append(args, key.Topic())
 	}
+
 	param := struct {
 		Op   string        `json:"op"`
 		Args []interface{} `json:"args"`
 	}{
 		Op:   "subscribe",
-		Args: []interface{}{key.Topic()},
+		Args: args,
 	}
 	buf, err := json.Marshal(param)
 	if err != nil {
@@ -37,7 +42,7 @@ func (s *V5WebsocketPublicService) SubscribeKline(
 			Args []interface{} `json:"args"`
 		}{
 			Op:   "unsubscribe",
-			Args: []interface{}{key.Topic()},
+			Args: args,
 		}
 		buf, err := json.Marshal(param)
 		if err != nil {
@@ -46,7 +51,9 @@ func (s *V5WebsocketPublicService) SubscribeKline(
 		if err := s.writeMessage(websocket.TextMessage, []byte(buf)); err != nil {
 			return err
 		}
-		s.removeParamKlineFunc(key)
+		for _, key := range keys {
+			s.removeParamKlineFunc(key)
+		}
 		return nil
 	}, nil
 }

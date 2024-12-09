@@ -26,7 +26,7 @@ type V5WebsocketPublicServiceI interface {
 	) (func() error, error)
 
 	SubscribeKline(
-		V5WebsocketPublicKlineParamKey,
+		[]V5WebsocketPublicKlineParamKey,
 		func(V5WebsocketPublicKlineResponse) error,
 	) (func() error, error)
 
@@ -227,7 +227,7 @@ func (s *V5WebsocketPublicService) Run() error {
 		if err := s.parseResponse(message, &resp); err != nil {
 			return err
 		}
-
+		//fmt.Println(resp.Key())
 		f, err := s.retrieveKlineFunc(resp.Key())
 		if err != nil {
 			return err
