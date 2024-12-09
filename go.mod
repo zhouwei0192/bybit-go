@@ -1,4 +1,4 @@
-module github.com/hirokisan/bybit/v2
+module 	"github.com/zhouwei0192/bybit-go"
 
 go 1.23
 
