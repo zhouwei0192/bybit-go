@@ -1,11 +1,12 @@
-module 	"github.com/zhouwei0192/bybit-go"
+module github.com/zhouwei0192/bybit-go
 
-go 1.23
+go 1.22.6
 
 require (
 	github.com/google/go-querystring v1.1.0
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.3
+	github.com/hirokisan/bybit/v2 v2.36.0
 	github.com/stretchr/testify v1.8.2
 )
 
